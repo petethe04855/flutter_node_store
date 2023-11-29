@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_node_store/app_router.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -16,6 +17,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   // ฟังก์ชันเมื่อจบการแสดง Intro
   void _onIntroEnd(context) async {
+    // Set ค่าให้กับ SharedPreferences เพื่อบอกว่าเคยแสดง Intro แล้ว
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('welcomeStatus', true);
+
     // ไปยังหน้า Login แบบปุ่มย้อนกลับ
     // Navigator.pushNamed(context, AppRouter.login);
 

@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 class RoundedButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
-
-  const RoundedButton({Key? key, required this.label, required this.onPressed})
-      : super(key: key);
+  final IconData? icon;
+  const RoundedButton({
+    Key? key,
+    required this.label,
+    required this.onPressed,
+    required this.icon,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +29,22 @@ class RoundedButton extends StatelessWidget {
         child: Container(
           height: 40,
           alignment: Alignment.center,
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              icon == null
+                  ? Container(
+                      height: 0,
+                    )
+                  : Icon(icon),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(
+                label,
+                style: const TextStyle(fontSize: 15),
+              ),
+            ],
           ),
         ),
       ),
