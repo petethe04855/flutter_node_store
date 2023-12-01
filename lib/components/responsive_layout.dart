@@ -15,34 +15,40 @@ class ResponsiveLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [primaryDark, primaryLight],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: GestureDetector(
+        onTap: () {
+          // ปิดคีย์บอร์ดเมื่อกดที่พื้นที่อื่น
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [primaryDark, primaryLight],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Container(
-              child: Card(
-                elevation: 12,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                // Using for responsive layout
-                child: LayoutBuilder(
-                  builder: (
-                    BuildContext context,
-                    BoxConstraints containers,
-                  ) {
-                    Widget childWidget = mobileChild;
-                    if (containers.maxWidth > 800) {
-                      childWidget = webChild;
-                    }
-                    return childWidget;
-                  },
+          child: Center(
+            child: SingleChildScrollView(
+              child: Container(
+                child: Card(
+                  elevation: 12,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  // Using for responsive layout
+                  child: LayoutBuilder(
+                    builder: (
+                      BuildContext context,
+                      BoxConstraints containers,
+                    ) {
+                      Widget childWidget = mobileChild;
+                      if (containers.maxWidth > 800) {
+                        childWidget = webChild;
+                      }
+                      return childWidget;
+                    },
+                  ),
                 ),
               ),
             ),

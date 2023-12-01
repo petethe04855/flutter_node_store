@@ -1,33 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_node_store/app_router.dart';
 import 'package:flutter_node_store/themes/styles.dart';
-import 'package:logger/logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_node_store/utils/utility.dart';
 
 // Logger
-final logger = Logger(
-  printer: PrettyPrinter(
-    methodCount: 1,
-    colors: true,
-    printEmojis: true,
-    printTime: false,
-  ),
-);
-
-// Test Logger
-// void testLogger() {
-//   logger.t('Verbose log');
-//   logger.d('Debug log');
-//   logger.i('Info log');
-//   logger.w('Warning log');
-//   logger.e('Error log');
-//   logger.f('What a terrible failure log');
-// }
 
 // กำหนดตัวแปร initialRoute ให้กับ MateriaApp
 var initialRoute;
 
 void main() async {
+  // Utility().testLogger();
   // testLogger();
 
   // ต้องเรียกฝช้ WidgetsFlutterBinding.ensureInitialized
@@ -35,10 +17,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // สร้างตัวแปร prefs เพื่อเรียกใช้ SharedPreferences
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // เรียกใช้ SharedPreferences
+  await Utility.initSharedPrefs();
 
   // ตรวจสอบว่าเคยแสดง Intro แล้วหรือยัง
-  if (prefs.getBool('welcomeStatus') == true) {
+  if (Utility.getSharedPreference('loginStatus') == true) {
+    initialRoute = AppRouter.dashboard;
+  } else if (Utility.getSharedPreference('welcomeStatus') == true) {
     // ถ้าเคยแสดง Intro แล้ว ให้ไปยังหน้า Login
     initialRoute = AppRouter.login;
   } else {
