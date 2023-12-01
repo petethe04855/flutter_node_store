@@ -8,7 +8,7 @@ class DioConfig {
 
   // ฟังก์ชันในการดึง token จาก shared preference
   static _getToken() async {
-    Utility.getSharedPreference('token');
+    _token = Utility.getSharedPreference('token');
   }
 
   // Create Dio instance
