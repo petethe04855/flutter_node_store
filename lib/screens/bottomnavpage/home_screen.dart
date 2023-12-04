@@ -6,6 +6,9 @@ import 'package:flutter_node_store/models/product_model.dart';
 import 'package:flutter_node_store/screens/products/components/product_item.dart';
 import 'package:flutter_node_store/services/rest_api.dart';
 
+// สร้างตัวแปร refreshKey สำหรับ RefreshIndicator
+var refreshKey = GlobalKey<RefreshIndicatorState>();
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -41,25 +44,31 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: FutureBuilder(
-          future: CallAPI().getAllProducts(),
-          builder: (context, AsyncSnapshot snapshot) {
-            // กรณีที่มี error
-            if (snapshot.hasError) {
-              return Center(
-                child: Text('มีข้อผิดพลาด โปรดลองใหม่อีกครั้ง'),
-              );
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              // กรณีที่โหลดข้อมูลสำเร็จ
-              List<ProductModel> products = snapshot.data;
-              return _isGridView ? _gridView(products) : _listView(products);
-            } else {
-              // กรณีที่กำลังโหลดข้อมูล
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          }),
+      body: RefreshIndicator(
+        key: refreshKey,
+        onRefresh: () async {
+          setState(() {});
+        },
+        child: FutureBuilder(
+            future: CallAPI().getAllProducts(),
+            builder: (context, AsyncSnapshot snapshot) {
+              // กรณีที่มี error
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text('มีข้อผิดพลาด โปรดลองใหม่อีกครั้ง'),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                // กรณีที่โหลดข้อมูลสำเร็จ
+                List<ProductModel> products = snapshot.data;
+                return _isGridView ? _gridView(products) : _listView(products);
+              } else {
+                // กรณีที่กำลังโหลดข้อมูล
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
+      ),
     );
   }
 
@@ -79,7 +88,15 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ProductItem(
               isGrid: true,
               product: products[index],
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRouter.productDetail,
+                  arguments: {
+                    'products': products[index].toJson(),
+                  },
+                );
+              },
             ),
           );
         });
@@ -89,17 +106,29 @@ class _HomeScreenState extends State<HomeScreen> {
   // _listView Widget -----------------------------------------------------------
   Widget _listView(List<ProductModel> products) {
     return ListView.builder(
-        itemCount: products.length,
-        itemBuilder: (context, index) {
-          return Padding(
-              padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
-              child: SizedBox(
-                  height: 350,
-                  child: ProductItem(
-                    product: products[index],
-                    onTap: () {},
-                  )));
-        });
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+          child: SizedBox(
+            height: 350,
+            child: ProductItem(
+              product: products[index],
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRouter.productDetail,
+                  arguments: {
+                    // products คือค่า key
+                    'products': products[index].toJson(),
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
   // ---------------------------------------------------------------------------
 }
