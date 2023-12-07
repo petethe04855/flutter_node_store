@@ -129,8 +129,14 @@ class LoginForm extends StatelessWidget {
                                 'loginStatus', true);
                             await Utility.setSharedPreference(
                                 'token', body['token']);
+                            // await Utility.setSharedPreference(
+                            //     'user', body['user']);
                             await Utility.setSharedPreference(
-                                'user', body['user']);
+                                'firstName', body["user"]["firstname"]);
+                            await Utility.setSharedPreference(
+                                'lastName', body["user"]["lastname"]);
+                            await Utility.setSharedPreference(
+                                'email', body["user"]["email"]);
 
                             Navigator.pushReplacementNamed(
                                 context, AppRouter.dashboard);

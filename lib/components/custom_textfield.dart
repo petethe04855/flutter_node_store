@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-// customTextField เป็น Widget ที่เราสร้าขึ้นมาเอง
-// โดนมีการรัยค่าต่างงๆ มาจากภายนอก
+// customTextField เป็น widget ที่เราสร้างขึ้นมาเอง
+// โดยมีการรับค่าต่างๆ มาจากภายนอก
 // และส่งค่าต่างๆ กลับไปยังภายนอก
-
 Widget customTextField({
   required TextEditingController controller,
   required String hintText,
@@ -30,7 +28,6 @@ Widget customTextField({
       filled: true,
       isDense: true,
       contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-      fillColor: Colors.grey[300],
     ),
     validator: validator,
   );
@@ -56,6 +53,7 @@ Widget customTextFieldProduct({
     obscureText: obscureText,
     decoration: InputDecoration(
       hintText: hintText,
+      hintStyle: const TextStyle(color: Colors.grey),
       prefixIcon: prefixIcon,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(40),
@@ -64,7 +62,6 @@ Widget customTextFieldProduct({
       filled: true,
       isDense: true,
       contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-      fillColor: Colors.grey[300],
     ),
     validator: validator,
     onSaved: onSaved,

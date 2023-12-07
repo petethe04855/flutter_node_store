@@ -1,28 +1,38 @@
+// ignore_for_file: prefer_const_constructors, prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:flutter_node_store/app_router.dart';
+import 'package:flutter_node_store/providers/counter_provider.dart';
+import 'package:flutter_node_store/providers/locale_provider.dart';
+import 'package:flutter_node_store/providers/theme_provider.dart';
+import 'package:flutter_node_store/providers/timer_provider.dart';
 import 'package:flutter_node_store/themes/styles.dart';
 import 'package:flutter_node_store/utils/utility.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// Logger
-
-// กำหนดตัวแปร initialRoute ให้กับ MateriaApp
+// กำหนดตัวแปร initialRoute ให้กับ MaterialApp
 var initialRoute;
 
+// กำหนดตัวแปร locale ให้กับ Provider
+var locale;
+
+// กำหนดตัวแปร themeData,isDark ให้กับ Provider
+ThemeData? themeData;
+var isDark;
+
 void main() async {
+  // Test Logger
   // Utility().testLogger();
-  // testLogger();
 
-  // ต้องเรียกฝช้ WidgetsFlutterBinding.ensureInitialized
-  // เพื่อให้สามารภเรียกใช้ SharedPreferences ไดเ
+  // ต้องเรียกใช้ WidgetsFlutterBinding.ensureInitialized()
+  // เพื่อให้สามารถเรียกใช้ SharedPreferences ได้
   WidgetsFlutterBinding.ensureInitialized();
-
-  // สร้างตัวแปร prefs เพื่อเรียกใช้ SharedPreferences
-  // SharedPreferences prefs = await SharedPreferences.getInstance();
 
   // เรียกใช้ SharedPreferences
   await Utility.initSharedPrefs();
 
-  // ตรวจสอบว่าเคยแสดง Intro แล้วหรือยัง
+  // ถ้าเคย Login แล้ว ให้ไปยังหน้า Dashboard
   if (Utility.getSharedPreference('loginStatus') == true) {
     initialRoute = AppRouter.dashboard;
   } else if (Utility.getSharedPreference('welcomeStatus') == true) {
@@ -32,6 +42,14 @@ void main() async {
     // ถ้ายังไม่เคยแสดง Intro ให้ไปยังหน้า Welcome
     initialRoute = AppRouter.welcome;
   }
+
+  // Set default locale from shared preference
+  String? languageCode = await Utility.getSharedPreference('languageCode');
+  locale = Locale(languageCode ?? 'en');
+
+  // set default locale from shared preference
+  isDark = await Utility.getSharedPreference('isDark') ?? false;
+  themeData = isDark ? AppTheme.darkTheme : AppTheme.lightTheme;
 
   runApp(
     const MyApp(),
@@ -43,11 +61,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      initialRoute: initialRoute,
-      routes: AppRouter.routes,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => CounterProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => TimerProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LocaleProvider(locale),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(
+            themeData!,
+            isDark!,
+          ),
+        ),
+      ],
+      child: Consumer2<LocaleProvider, ThemeProvider>(
+        builder: (context, locale, theme, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: theme.getTheme(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: locale.locale,
+            initialRoute: initialRoute,
+            routes: AppRouter.routes,
+          );
+        },
+      ),
     );
   }
 }

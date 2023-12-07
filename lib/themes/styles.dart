@@ -10,13 +10,13 @@ class AppTheme {
       fontSize: 16,
     ),
     bodyLarge: TextStyle(
-      fontSize: 24,
+      fontSize: 18,
     ),
   );
 
   // Light theme
   static final ThemeData lightTheme = ThemeData(
-    useMaterial3: false,
+    useMaterial3: true,
     fontFamily: 'NotoSansThai',
     primaryColor: primary,
     primaryColorDark: primaryDark,
@@ -26,11 +26,15 @@ class AppTheme {
     colorScheme: const ColorScheme.light(primary: primary),
     iconTheme: const IconThemeData(color: primaryText),
     scaffoldBackgroundColor: Colors.blueGrey[100],
+    drawerTheme: DrawerThemeData(
+      backgroundColor: primary,
+    ),
     appBarTheme: const AppBarTheme(
       titleTextStyle: TextStyle(
+        color: icons,
         fontFamily: 'NotoSansThai',
         fontWeight: FontWeight.bold,
-        fontSize: 20,
+        fontSize: 18,
       ),
       backgroundColor: primary,
       foregroundColor: icons,
@@ -40,7 +44,7 @@ class AppTheme {
 
   // dark theme
   static final ThemeData darkTheme = ThemeData(
-    useMaterial3: false,
+    useMaterial3: true,
     fontFamily: 'NotoSansThai',
     primaryColor: primary,
     primaryColorDark: primaryDark,
@@ -50,11 +54,16 @@ class AppTheme {
     colorScheme: const ColorScheme.dark(primary: icons),
     iconTheme: const IconThemeData(color: icons),
     scaffoldBackgroundColor: primaryText,
+    navigationDrawerTheme: NavigationDrawerThemeData(
+      backgroundColor: primaryText,
+      elevation: 0,
+    ),
     appBarTheme: const AppBarTheme(
       titleTextStyle: TextStyle(
+        color: icons,
         fontFamily: 'NotoSansThai',
         fontWeight: FontWeight.bold,
-        fontSize: 20,
+        fontSize: 18,
       ),
       backgroundColor: primaryText,
       foregroundColor: icons,
